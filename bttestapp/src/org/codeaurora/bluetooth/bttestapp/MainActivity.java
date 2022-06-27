@@ -28,7 +28,11 @@
 
 package org.codeaurora.bluetooth.bttestapp;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+
 import android.bluetooth.BluetoothAdapter;
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothA2dpSink;
@@ -44,6 +48,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -90,6 +95,8 @@ public class MainActivity extends Activity {
     private final String UUID_AUDIO_SOURCE = "0000110A-0000-1000-8000-00805F9B34FB";
     private final String UUID_AUDIO_SINK = "0000110B-0000-1000-8000-00805F9B34FB";
     private final String KEY_A2DP_SINK = "persist.vendor.service.bt.a2dp.sink";
+    private final int PERMISSION_REQUEST = 10001;
+    private boolean isBtPermssionGranted = false;
 
     private final BroadcastReceiver mPickerReceiver = new BroadcastReceiver() {
 
@@ -178,6 +185,28 @@ public class MainActivity extends Activity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         setContentView(R.layout.activity_main);
+        checkBTPermissions();
+    }
+
+    private boolean checkBTPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Requesting Bluetooth access");
+            ActivityCompat.requestPermissions(this, new String[]
+                    {Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST);
+            return false;
+        }
+        isBtPermssionGranted = true;
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+            int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST && grantResults[0]
+                == PackageManager.PERMISSION_GRANTED) {
+            isBtPermssionGranted = true;
+        }
     }
 
     @Override
