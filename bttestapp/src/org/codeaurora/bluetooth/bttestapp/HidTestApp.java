@@ -33,8 +33,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
-import android.bluetooth.IBluetooth;
-import android.bluetooth.IBluetoothHidHost;
 import android.bluetooth.BluetoothHidHost;
 import android.bluetooth.BluetoothProfile.ServiceListener;
 import android.content.BroadcastReceiver;
@@ -238,42 +236,50 @@ public class HidTestApp extends Activity implements OnClickListener {
 
     boolean getProtocolMode(BluetoothDevice device) {
         if (mService == null) return false;
-        return mService.getProtocolMode(device);
+       // return mService.getProtocolMode(device);
+        return false;
     }
 
     boolean setProtocolMode(BluetoothDevice device, int mode) {
         if (mService == null) return false;
-        return mService.setProtocolMode(device, mode);
+        //return mService.setProtocolMode(device, mode);
+        return false;
     }
 
     boolean virtualUnplug(BluetoothDevice device) {
         if (mService == null) return false;
-        return mService.virtualUnplug(device);
+        //return mService.virtualUnplug(device);
+        return false;
     }
 
     boolean getReport(BluetoothDevice device, byte reportType, byte reportId, int bufferSize) {
         if (mService == null) return false;
-        return mService.getReport(device, reportType, reportId, bufferSize);
+        //return mService.getReport(device, reportType, reportId, bufferSize);
+        return false;
     }
 
     boolean setReport(BluetoothDevice device, byte reportType, String report) {
         if (mService == null) return false;
-        return mService.setReport(device, reportType, report);
+        //return mService.setReport(device, reportType, report);
+        return false;
     }
 
     boolean sendData(BluetoothDevice device, String report) {
         if (mService == null) return false;
-        return mService.sendData(device, report);
+        //return mService.sendData(device, report);
+        return false;
     }
 
     boolean getIdleTime(BluetoothDevice device) {
         if (mService == null) return false;
-        return mService.getIdleTime(device);
+        //return mService.getIdleTime(device);
+        return false;
     }
 
     boolean setIdleTime(BluetoothDevice device, byte idleTime) {
         if (mService == null) return false;
-        return mService.setIdleTime(device, idleTime);
+        //return mService.setIdleTime(device, idleTime);
+        return false;
     }
 
     private final ServiceListener mServiceListener = new ServiceListener() {

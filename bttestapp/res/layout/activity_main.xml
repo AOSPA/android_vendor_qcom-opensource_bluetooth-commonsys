@@ -43,79 +43,6 @@
         android:textColor="@android:color/black"
         android:layout_marginBottom="@dimen/activity_base_margin"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    <TextView
-        android:id="@+id/device_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/blank"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    <TextView
-        android:id="@+id/device_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/blank"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="horizontal">
-        <Button
-            android:id="@+id/discover_services"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onButtonClick"
-            android:text="@string/discover_services" />
-        <Button
-            android:id="@+id/select_device"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onButtonClick"
-            android:text="@string/select_device" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:background="@android:color/transparent">
-        <TextView
-            style="@style/textview_normal"
-            android:text="@string/a2dp_role" />
-        <RadioGroup
-            style="@style/textview_normal"
-            android:gravity="start"
-            android:orientation="horizontal" >
-            <RadioButton
-                android:id="@+id/id_a2dp_source"
-                style="@style/textview_normal"
-                android:onClick="onRadioButtonClicked"
-                android:text="@string/a2dp_source" />
-            <RadioButton
-                android:id="@+id/id_a2dp_sink"
-                style="@style/textview_normal"
-                android:onClick="onRadioButtonClicked"
-                android:text="@string/a2dp_sink" />
-        </RadioGroup>
-    </LinearLayout>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_base_margin"
-        android:layout_marginRight="@dimen/activity_base_margin"
-        android:onClick="showCoveArtActivity"
-         android:visibility="gone"
-        android:text="@string/showCoverArt" />
-    <Button
-        android:id="@+id/id_btn_show_avrcp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_base_margin"
-        android:onClick="showAvrcpActivity"
-        android:enabled="false"
-        android:visibility="gone"
-        android:text="@string/showavrcp" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -130,14 +57,4 @@
         android:text="@string/showHidHost"
         android:layout_marginLeft="@dimen/activity_base_margin"
         android:layout_marginRight="@dimen/activity_base_margin"/>
-    <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/services_header"
-        android:visibility="invisible" />
-    <ListView
-        android:id="@+id/id_lv_services"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 </LinearLayout>

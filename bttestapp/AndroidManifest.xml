@@ -26,29 +26,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="AvrcpCoverArtActivity"
-           android:label="@string/avrcp_cover_art"
-           android:screenOrientation="portrait"
-           android:enabled="true"
-           android:exported="true"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name=".AvrcpTestActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTop"
-            android:enabled="true"
-            android:exported="true"/>
-
-        <!--<receiver android:name=".BluetoothConnectionReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="org.codeaurora.bluetooth.action.NEW_BLUETOOTH_DEVICE" />
-                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
-            </intent-filter>
-        </receiver> !-->
-
-        <activity
             android:name=".HidTestApp"
             android:enabled="true"
             android:exported="true"
