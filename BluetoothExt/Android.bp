@@ -6,7 +6,7 @@ android_app {
 
     platform_apis: true,
     certificate: "platform",
-    libs: ["javax.obex"],
+    libs: ["javax.obex.impl"],
     static_libs: ["vendor.qti.hardware.bluetooth_dun-V1.0-java"],
 
     optimize: {
