@@ -35,7 +35,8 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
     persist.bluetooth.leaudio.bypass_allow_list=true \
     bluetooth.leaudio.dual_bidirection_swb.supported=true \
     persist.bluetooth.leaudio.notify.idle.during.call=true \
-    persist.vendor.bluetooth.haltest=true
+    persist.vendor.bluetooth.haltest=true \
+    bluetooth.core.le.max_number_of_concurrent_connections=10
 
 ifneq ($(TARGET_HAS_LOW_RAM), true)
 PRODUCT_PACKAGES += Xpan
