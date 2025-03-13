@@ -28,7 +28,6 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
     ro.bluetooth.leaudio_offload.supported=true \
     bluetooth.device.class_of_device=90,2,12 \
     persist.bluetooth.leaudio_offload.disabled=false \
-    persist.bluetooth.leaudio.allow.multiple.context=false \
     persist.bluetooth.leaudio.bypass_allow_list=true \
     bluetooth.leaudio.dual_bidirection_swb.supported=true \
     persist.bluetooth.leaudio.notify.idle.during.call=true \
