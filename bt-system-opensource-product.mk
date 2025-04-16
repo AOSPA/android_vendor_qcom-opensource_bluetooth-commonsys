@@ -1,8 +1,6 @@
 #BT
 ifeq ($(BOARD_HAVE_BLUETOOTH_QCOM),true)
-# BT Related Test app & Tools
-PRODUCT_PACKAGES_DEBUG += gatt_tool_qti_internal
-PRODUCT_PACKAGES_DEBUG += l2test_ertm
+PRODUCT_PACKAGES += Bluetooth
 
 ifneq ($(TARGET_BOARD_TYPE),auto)
 # Set supported Bluetooth profiles to enabled
