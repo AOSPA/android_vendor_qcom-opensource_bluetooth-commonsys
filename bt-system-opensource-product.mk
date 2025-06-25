@@ -16,11 +16,13 @@ PRODUCT_PRODUCT_PROPERTIES += \
     bluetooth.profile.hid.device.enabled=true \
     bluetooth.profile.map.server.enabled=true \
     bluetooth.profile.opp.enabled=true \
-    bluetooth.profile.pan.nap.enabled=true \
-    bluetooth.profile.pan.panu.enabled=true \
     bluetooth.profile.pbap.server.enabled=true \
     bluetooth.profile.bas.client.enabled=true \
-    bluetooth.device_id.vendor_id=0x001D
+    bluetooth.device_id.vendor_id=0x001D \
+ifneq ($(TARGET_SUPPORTS_WEAR_ANDROID), true)
+    bluetooth.profile.pan.nap.enabled=true \
+    bluetooth.profile.pan.panu.enabled=true \
+endif #TARGET_SUPPORTS_WEAR_ANDROID
 
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     bluetooth.profile.sap.server.enabled=true \
