@@ -4,9 +4,7 @@ BOARD_HAVE_BLUETOOTH_QCOM := true
 BOARD_HAS_BT_XPAN  ?= true
 
 #FM
-ifneq ($(TARGET_BOARD_TYPE),auto)
-BOARD_HAVE_QCOM_FM := true
-endif
+BOARD_HAVE_QCOM_FM ?= false
 
 ifeq ($(TARGET_USES_QMAA),true)
 ifneq ($(TARGET_USES_QMAA_OVERRIDE_BLUETOOTH),true)
