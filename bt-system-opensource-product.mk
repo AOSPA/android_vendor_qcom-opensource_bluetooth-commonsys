@@ -13,14 +13,16 @@ PRODUCT_PRODUCT_PROPERTIES += \
     bluetooth.profile.hfp.ag.enabled=true \
     bluetooth.profile.gatt.enabled=true \
     bluetooth.profile.hid.host.enabled=true \
-    bluetooth.profile.hid.device.enabled=true \
+    bluetooth.profile.hid.device.enabled=false \
     bluetooth.profile.map.server.enabled=true \
     bluetooth.profile.opp.enabled=true \
-    bluetooth.profile.pan.nap.enabled=true \
-    bluetooth.profile.pan.panu.enabled=true \
     bluetooth.profile.pbap.server.enabled=true \
     bluetooth.profile.bas.client.enabled=true \
-    bluetooth.device_id.vendor_id=0x001D
+    bluetooth.device_id.vendor_id=0x001D \
+ifneq ($(TARGET_SUPPORTS_WEAR_ANDROID), true)
+    bluetooth.profile.pan.nap.enabled=true \
+    bluetooth.profile.pan.panu.enabled=true \
+endif #TARGET_SUPPORTS_WEAR_ANDROID
 
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     bluetooth.profile.sap.server.enabled=true \
@@ -33,7 +35,8 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
     persist.bluetooth.leaudio.bypass_allow_list=true \
     bluetooth.leaudio.dual_bidirection_swb.supported=true \
     persist.bluetooth.leaudio.notify.idle.during.call=true \
-    persist.vendor.bluetooth.haltest=true
+    persist.vendor.bluetooth.haltest=true \
+    bluetooth.core.le.max_number_of_concurrent_connections=10
 
 ifneq ($(TARGET_HAS_LOW_RAM), true)
 PRODUCT_PACKAGES += Xpan
