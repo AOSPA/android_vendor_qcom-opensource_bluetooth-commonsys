@@ -1,0 +1,69 @@
+<!--
+ Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+ SPDX-License-Identifier: BSD-3-Clause-Clear
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bluetooth Vendor Commands Test"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Status: Ready"
+            android:textSize="14sp"
+            android:background="#f0f0f0"
+            android:padding="8dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Custom Command Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Custom Vendor Command"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/opcode_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Opcode (hex, e.g., FC01)"
+            android:inputType="text"
+            android:text="0x29"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/parameters_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Parameters (hex, e.g., 01 02 03)"
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/send_custom_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Custom Command"
+            android:layout_marginBottom="16dp" />
+    </LinearLayout>
+
+</ScrollView>
