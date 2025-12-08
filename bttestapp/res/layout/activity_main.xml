@@ -47,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="showHidDevice"
+        android:visibility="gone"
         android:text="@string/showHidDevice"
         android:layout_marginLeft="@dimen/activity_base_margin"
         android:layout_marginRight="@dimen/activity_base_margin"/>
@@ -54,7 +55,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="showHidHost"
+        android:visibility="gone"
         android:text="@string/showHidHost"
+        android:layout_marginLeft="@dimen/activity_base_margin"
+        android:layout_marginRight="@dimen/activity_base_margin"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="showL2capCoc"
+        android:text="BLE L2CAP CoC Test"
+        android:padding="20dp"
         android:layout_marginLeft="@dimen/activity_base_margin"
         android:layout_marginRight="@dimen/activity_base_margin"/>
 </LinearLayout>

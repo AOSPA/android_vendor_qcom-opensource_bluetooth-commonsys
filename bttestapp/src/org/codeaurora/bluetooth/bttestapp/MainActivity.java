@@ -15,7 +15,7 @@
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT ARE DISCLAIMED.    IN NO EVENT SHALL THE COPYRIGHT OWNER OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
@@ -29,9 +29,8 @@
 package org.codeaurora.bluetooth.bttestapp;
 
 import org.codeaurora.bluetooth.bttestapp.hidd.HidDeviceActivity;
-
+import org.codeaurora.bluetooth.bttestapp.lecoc.L2capCocActivity;
 import org.codeaurora.bluetooth.bttestapp.R;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -39,17 +38,18 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
     private static final String TAG = "BtTestMainActivity";
     private static boolean DBG = true;
-
     private final int PERMISSION_REQUEST = 10001;
     private boolean isBtPermssionGranted = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +60,25 @@ public class MainActivity extends Activity {
     }
 
     private boolean checkBTPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
-                != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Requesting Bluetooth access");
-            ActivityCompat.requestPermissions(this, new String[]
-                    {Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST);
+        List<String> permissionsNeeded = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.BLUETOOTH_SCAN);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.BLUETOOTH_ADVERTISE);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if (!permissionsNeeded.isEmpty()) {
+            Log.d(TAG, "Requesting " + permissionsNeeded.size() + " permissions");
+            ActivityCompat.requestPermissions(this, permissionsNeeded.toArray(new String[0]), PERMISSION_REQUEST);
             return false;
         }
         isBtPermssionGranted = true;
@@ -74,19 +88,53 @@ public class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[],
             int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST && grantResults[0]
-                == PackageManager.PERMISSION_GRANTED) {
-            isBtPermssionGranted = true;
+        if (requestCode == PERMISSION_REQUEST) {
+            boolean allGranted = true;
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "Permission denied: " + permissions[i]);
+                    allGranted = false;
+                } else {
+                    Log.d(TAG, "Permission granted: " + permissions[i]);
+                }
+            }
+            if (allGranted) {
+                isBtPermssionGranted = true;
+                Log.d(TAG, "All permissions granted successfully");
+            } else {
+                isBtPermssionGranted = false;
+                Log.d(TAG, "Some permissions were denied");
+            }
         }
     }
 
     public void showHidHost(View v) {
+        if (!isBtPermssionGranted) {
+            Toast.makeText(this, "Permissions not granted. Please grant all required permissions.", Toast.LENGTH_LONG).show();
+            Log.w(TAG, "Cannot open HID Host - permissions not granted");
+            return;
+        }
         Log.i(TAG," showHidHost");
         startActivity(new Intent(this, HidTestApp.class));
     }
 
     public void showHidDevice(View v) {
+        if (!isBtPermssionGranted) {
+            Toast.makeText(this, "Permissions not granted. Please grant all required permissions.", Toast.LENGTH_LONG).show();
+            Log.w(TAG, "Cannot open HID Device - permissions not granted");
+            return;
+        }
         Log.i(TAG," showHidDevice");
         startActivity(new Intent(this, HidDeviceActivity.class));
+    }
+
+    public void showL2capCoc(View v) {
+        if (!isBtPermssionGranted) {
+            Toast.makeText(this, "Permissions not granted. Please grant all required permissions.", Toast.LENGTH_LONG).show();
+            Log.w(TAG, "Cannot open L2CAP CoC - permissions not granted");
+            return;
+        }
+        Log.i(TAG," showL2capCoc");
+        startActivity(new Intent(this, L2capCocActivity.class));
     }
 }
