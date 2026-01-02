@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+ SPDX-License-Identifier: BSD-3-Clause-Clear
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BLE L2CAP CoC Test"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:background="@android:color/background_light" />
+
+    <!-- Server Controls -->
+ <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"> 
+        
+    <TextView
+    android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Server Controls"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
+
+    <!-- Server Status -->
+    <TextView
+        android:id="@+id/tvServerStatus"
+        android:layout_weight="3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Server: Stopped"
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:background="@android:color/background_light"
+        android:padding="8dp"/>
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btnStartServer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Start Server"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnStopServer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stop Server"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <!-- Client Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <TextView
+      android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Client Controls"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Client Status -->
+    <TextView
+      android:layout_weight="3"
+        android:id="@+id/tvClientStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Client: Disconnected"
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:background="@android:color/background_light"
+        android:padding="8dp"/>
+         </LinearLayout>
+
+    <!-- PSM Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PSM:"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="8dp"
+            android:minWidth="40dp" />
+
+        <EditText
+            android:id="@+id/etPsmValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter PSM (e.g., 128)"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:background="@android:drawable/edit_text"
+            android:padding="8dp"
+            android:text="128"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(Default: 128)"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:gravity="center_vertical" />
+
+    </LinearLayout>
+
+    <LinearLayout
+    android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btnScanDevices"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Scan Devices"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnStopScan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stop Scan"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <!-- Device List -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Available Bonded Devices (tap to connect)"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp">
+
+        <ListView
+            android:id="@+id/lvDevices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp" />
+
+        <TextView
+            android:id="@+id/tvNoDevices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="No paired devices found.\nPlease pair Bluetooth devices from Settings first."
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:background="@android:color/white"
+            android:padding="16dp"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <!-- Data Exchange -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Data Exchange"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Text Message Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <EditText
+            android:id="@+id/etDataToSend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter message to send"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:background="@android:drawable/edit_text"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnSendData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send Text"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <!-- File Selection -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <Button
+            android:id="@+id/btnSelectFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select File"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnSendFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send File"
+            android:enabled="false"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tvSelectedFile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="No file selected"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:textStyle="italic"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:background="@android:color/background_light" />
+
+    </LinearLayout>
+
+    <!-- Credits Display -->
+    <TextView
+        android:id="@+id/tvCredits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Local: 0 | Remote: 0"
+        android:textSize="12sp"
+        android:textColor="@android:color/black"
+        android:background="@android:color/background_light"
+        android:padding="4dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Logs Header with Clear Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Logs"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
+
+        <Button
+            android:id="@+id/btnClearLogs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear"
+            android:textSize="12sp"
+            android:minHeight="32dp" />
+
+    </LinearLayout>
+
+    <!-- Logs -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/black"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tvLogs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:text="L2CAP CoC Test Application Started\n" />
+
+    </ScrollView>
+
+</LinearLayout>

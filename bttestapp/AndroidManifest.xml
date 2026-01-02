@@ -7,9 +7,13 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH_STACK" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
     <application
         android:allowBackup="true"
@@ -43,6 +47,18 @@
             android:enabled="true"
             android:exported="true"
             android:configChanges="orientation|keyboardHidden|screenSize" />
+
+         <activity
+            android:name=".lecoc.L2capCocActivity"
+            android:enabled="true"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
+        <service
+            android:name=".lecoc.BluetoothL2capService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
     </application>
 
 </manifest>
