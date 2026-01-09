@@ -11,6 +11,7 @@ import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
+import android.content.Context;
 import android.os.ParcelUuid;
 import android.util.Log;
 
@@ -43,9 +44,10 @@ public class L2capCocServer extends L2capCocBase {
      * Constructor for L2CAP CoC Server
      * 
      * @param callback Callback interface for server events
+     * @param context Context for configuration access
      */
-    public L2capCocServer(L2capCocCallback callback) {
-        super(callback);
+    public L2capCocServer(L2capCocCallback callback, Context context) {
+        super(callback, context);
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
     
@@ -115,7 +117,7 @@ public class L2capCocServer extends L2capCocBase {
             return;
         }
         
-        if (DBG) Log.d(TAG, "Starting L2CAP CoC server on PSM: " + PSM);
+        if (DBG) Log.d(TAG, "Starting L2CAP CoC server on configured PSM: " + config.getPsm());
         
         try {
             // Create insecure L2CAP server socket (no authentication/encryption)

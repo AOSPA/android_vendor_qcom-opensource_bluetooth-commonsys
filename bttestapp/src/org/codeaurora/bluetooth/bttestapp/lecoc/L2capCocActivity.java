@@ -52,10 +52,11 @@ import java.util.Set;
 public class L2capCocActivity extends Activity implements BluetoothL2capService.ServiceCallback {
     private static final String TAG = "L2capCocActivity";
     private static final int FILE_SELECT_REQUEST_CODE = 1001;
+    private static final int CONFIG_REQUEST_CODE = 1002;
     
     // UI Components
     private Button btnStartServer, btnStopServer, btnScanDevices, btnStopScan;
-    private Button btnSendData, btnClearLogs, btnSelectFile, btnSendFile;
+    private Button btnSendData, btnClearLogs, btnSelectFile, btnSendFile, btnConfiguration;
     private EditText etDataToSend, etPsmValue;
     private TextView tvServerStatus, tvClientStatus, tvLogs, tvCredits, tvNoDevices, tvSelectedFile;
     private ListView lvDevices;
@@ -192,6 +193,9 @@ public class L2capCocActivity extends Activity implements BluetoothL2capService.
      * Initialize UI components and set up event listeners
      */
     private void initializeUI() {
+        // Configuration button
+        btnConfiguration = findViewById(R.id.btnConfiguration);
+
         // Server controls
         btnStartServer = findViewById(R.id.btnStartServer);
         btnStopServer = findViewById(R.id.btnStopServer);
@@ -221,6 +225,7 @@ public class L2capCocActivity extends Activity implements BluetoothL2capService.
         tvLogs.setMovementMethod(new ScrollingMovementMethod());
         
         // Set up button listeners
+        btnConfiguration.setOnClickListener(v -> openConfiguration());
         btnStartServer.setOnClickListener(v -> startServer());
         btnStopServer.setOnClickListener(v -> stopServer());
         btnScanDevices.setOnClickListener(v -> startDeviceDiscovery());
@@ -448,7 +453,7 @@ public class L2capCocActivity extends Activity implements BluetoothL2capService.
     }
     
     /**
-     * Send file data through the active connection via service
+     * Send file data through the active connection via service using streaming approach
      */
     private void sendFileData() {
         if (selectedFileUri == null) {
@@ -461,28 +466,24 @@ public class L2capCocActivity extends Activity implements BluetoothL2capService.
             return;
         }
         
-        // Read file content in background thread
+        // Stream file content in background thread to avoid OOM
         new Thread(() -> {
             try {
-                String fileContent = readFileContent(selectedFileUri);
-                if (fileContent != null) {
-                    // Send via service on UI thread
-                    uiHandler.post(() -> {
-                        if (l2capService.sendData(fileContent)) {
-                            appendLog("Sent file: " + selectedFileName + " (" + fileContent.length() + " chars)");
-                        } else {
-                            appendLog("Failed to send file - no active connection");
-                        }
-                    });
-                } else {
-                    uiHandler.post(() -> appendLog("Failed to read file content"));
-                }
+                sendFileInChunks(selectedFileUri);
             } catch (Exception e) {
-                uiHandler.post(() -> appendLog("Error reading file: " + e.getMessage()));
+                uiHandler.post(() -> appendLog("Error sending file: " + e.getMessage()));
             }
         }).start();
     }
     
+    /**
+     * Open configuration activity
+     */
+    private void openConfiguration() {
+        Intent configIntent = new Intent(this, L2capCocConfigActivity.class);
+        startActivityForResult(configIntent, CONFIG_REQUEST_CODE);
+    }
+
     /**
      * Clear the logs display
      */
@@ -656,7 +657,7 @@ public class L2capCocActivity extends Activity implements BluetoothL2capService.
     }
     
     /**
-     * Read content from selected file URI
+     * Read content from selected file URI (kept for backward compatibility with small files)
      */
     private String readFileContent(Uri uri) {
         StringBuilder content = new StringBuilder();
@@ -677,6 +678,100 @@ public class L2capCocActivity extends Activity implements BluetoothL2capService.
         }
     }
     
+    /**
+     * Send file in chunks to avoid Out of Memory errors for large files (100MB+)
+     * Uses streaming approach with configurable chunk size based on buffer configuration
+     */
+    private void sendFileInChunks(Uri uri) throws IOException {
+        L2capCocConfig config = L2capCocConfig.getInstance(this);
+        final int CHUNK_SIZE = Math.min(config.getBufferSize(), 1048576); // Use buffer size up to 1MB max
+        final byte[] buffer = new byte[CHUNK_SIZE];
+
+        long totalBytes = 0;
+        long sentBytes = 0;
+        int chunkCount = 0;
+
+        uiHandler.post(() -> appendLog("Starting file transfer in chunks of " + CHUNK_SIZE + " bytes"));
+
+        try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
+            if (inputStream == null) {
+                throw new IOException("Cannot open input stream for file");
+            }
+
+            // Get file size for progress tracking (if available)
+            try {
+                totalBytes = inputStream.available();
+                final long totalBytesFinal = totalBytes;
+                uiHandler.post(() -> appendLog("File size: " + formatBytes(totalBytesFinal)));
+            } catch (IOException e) {
+                totalBytes = -1; // Unknown size
+                uiHandler.post(() -> appendLog("File size: Unknown"));
+            }
+
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                chunkCount++;
+
+                // Create chunk data (only the bytes actually read)
+                byte[] chunkData = new byte[bytesRead];
+                System.arraycopy(buffer, 0, chunkData, 0, bytesRead);
+
+                // Send chunk via service on UI thread
+                final int currentChunk = chunkCount;
+                final long currentSentBytes = sentBytes + bytesRead;
+                final long finalTotalBytes = totalBytes;
+
+                uiHandler.post(() -> {
+                    if (l2capService != null && l2capService.sendData(chunkData)) {
+                        String progressMsg = String.format("Sent chunk %d (%s)",
+                            currentChunk, formatBytes(chunkData.length));
+
+                        if (finalTotalBytes > 0) {
+                            int progress = (int) ((currentSentBytes * 100) / finalTotalBytes);
+                            progressMsg += String.format(" - Progress: %d%%", progress);
+                        }
+
+                        appendLog(progressMsg);
+                    } else {
+                        appendLog("Failed to send chunk " + currentChunk + " - connection lost");
+                    }
+                });
+
+                sentBytes += bytesRead;
+
+                // Small delay to prevent overwhelming the Bluetooth stack
+                try {
+                    Thread.sleep(10); // 10ms delay between chunks
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException("File transfer interrupted", e);
+                }
+            }
+
+            // Final status update
+            final long finalSentBytes = sentBytes;
+            final int finalChunkCount = chunkCount;
+            uiHandler.post(() -> {
+                appendLog(String.format("File transfer completed: %s in %d chunks",
+                    formatBytes(finalSentBytes), finalChunkCount));
+            });
+
+        } catch (IOException e) {
+            uiHandler.post(() -> appendLog("File transfer failed: " + e.getMessage()));
+            throw e;
+        }
+    }
+
+    /**
+     * Format bytes into human readable format
+     */
+    private String formatBytes(long bytes) {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return String.format("%.1f KB", bytes / 1024.0);
+        if (bytes < 1024 * 1024 * 1024) return String.format("%.1f MB", bytes / (1024.0 * 1024.0));
+        return String.format("%.1f GB", bytes / (1024.0 * 1024.0 * 1024.0));
+    }
+
     /**
      * Get file name from URI
      */
@@ -726,6 +821,16 @@ public class L2capCocActivity extends Activity implements BluetoothL2capService.
                 
                 updateFileSelection();
                 appendLog("File selected: " + selectedFileName);
+            }
+        } else if (requestCode == CONFIG_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Configuration was updated
+            L2capCocConfig config = L2capCocConfig.getInstance(this);
+            appendLog("Configuration updated: " + config.getConfigSummary());
+
+            // Note: Configuration changes will take effect on next connection
+            // as existing connections use the configuration from when they were created
+            if (l2capService != null && (l2capService.isServerRunning() || l2capService.hasActiveConnection())) {
+                appendLog("Note: Configuration changes will take effect on next connection");
             }
         }
     }

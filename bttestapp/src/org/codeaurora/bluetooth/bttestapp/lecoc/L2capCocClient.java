@@ -7,6 +7,7 @@ package org.codeaurora.bluetooth.bttestapp.lecoc;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -25,9 +26,10 @@ public class L2capCocClient extends L2capCocBase {
     /**
      * Constructor for L2CAP CoC Client
      * @param callback Callback interface for client events
+     * @param context Context for configuration access
      */
-    public L2capCocClient(L2capCocCallback callback) {
-        super(callback);
+    public L2capCocClient(L2capCocCallback callback, Context context) {
+        super(callback, context);
     }
     
     /**
@@ -36,7 +38,7 @@ public class L2capCocClient extends L2capCocBase {
      * @return true if connection attempt started successfully
      */
     public boolean connectToDevice(BluetoothDevice device) {
-        return connectToDevice(device, PSM);
+        return connectToDevice(device, config.getPsm());
     }
     
     /**
@@ -69,7 +71,7 @@ public class L2capCocClient extends L2capCocBase {
      * Performs the actual L2CAP CoC connection
      */
     private void performConnection() {
-        performConnection(PSM);
+        performConnection(config.getPsm());
     }
     
     /**

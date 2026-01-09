@@ -7,6 +7,7 @@ package org.codeaurora.bluetooth.bttestapp.lecoc;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -25,11 +26,8 @@ public abstract class L2capCocBase {
     private static final String TAG = "L2capCocBase";
     private static final boolean DBG = true;
     
-    // Constants
-    protected static final int BUFFER_SIZE = 1024;
-    protected static final int MAX_CREDITS = 10;
-    protected static final int HEADER_SIZE = 4;
-    protected static final int PSM = 0x0080;
+    // Configuration
+    protected final L2capCocConfig config;
     
     // Common components
     protected final L2capCocCallback callback;
@@ -46,16 +44,19 @@ public abstract class L2capCocBase {
     protected final AtomicBoolean isRunning = new AtomicBoolean(false);
     
     // Flow control
-    protected final AtomicInteger availableCredits = new AtomicInteger(MAX_CREDITS);
+    protected final AtomicInteger availableCredits;
     protected final Object creditsLock = new Object();
     
     /**
      * Constructor for L2CAP CoC base class
      * 
      * @param callback Callback interface for events
+     * @param context Context for configuration access
      */
-    protected L2capCocBase(L2capCocCallback callback) {
+    protected L2capCocBase(L2capCocCallback callback, Context context) {
         this.callback = callback;
+        this.config = L2capCocConfig.getInstance(context);
+        this.availableCredits = new AtomicInteger(config.getMaxCredits());
         this.executorService = Executors.newCachedThreadPool();
     }
     
@@ -103,7 +104,7 @@ public abstract class L2capCocBase {
             return false;
         }
         
-        if (data.length > BUFFER_SIZE - HEADER_SIZE) {
+        if (data.length > config.getBufferSize() - config.getHeaderSize()) {
             if (DBG) Log.w(TAG, "Data too large: " + data.length + " bytes");
             return false;
         }
@@ -130,7 +131,7 @@ public abstract class L2capCocBase {
             
             // Notify callback about credit change
             if (callback != null) {
-                callback.onCreditsChanged(availableCredits.get(), MAX_CREDITS);
+                callback.onCreditsChanged(availableCredits.get(), config.getMaxCredits());
             }
             
             return true;
@@ -196,11 +197,11 @@ public abstract class L2capCocBase {
         
         while (isRunning.get() && isConnected.get()) {
             try {
-                // Read data length first (4 bytes)
-                byte[] lengthBytes = new byte[HEADER_SIZE];
+                // Read data length first (header bytes)
+                byte[] lengthBytes = new byte[config.getHeaderSize()];
                 int bytesRead = 0;
-                while (bytesRead < HEADER_SIZE) {
-                    int read = inputStream.read(lengthBytes, bytesRead, HEADER_SIZE - bytesRead);
+                while (bytesRead < config.getHeaderSize()) {
+                    int read = inputStream.read(lengthBytes, bytesRead, config.getHeaderSize() - bytesRead);
                     if (read == -1) {
                         throw new IOException("End of stream reached");
                     }
@@ -209,7 +210,7 @@ public abstract class L2capCocBase {
                 
                 int dataLength = bytesToInt(lengthBytes);
                 
-                if (dataLength <= 0 || dataLength > BUFFER_SIZE - HEADER_SIZE) {
+                if (dataLength <= 0 || dataLength > config.getBufferSize() - config.getHeaderSize()) {
                     if (DBG) Log.w(TAG, "Invalid data length: " + dataLength);
                     continue;
                 }
@@ -234,10 +235,10 @@ public abstract class L2capCocBase {
                 
                 // Grant credit back (simple flow control)
                 synchronized (creditsLock) {
-                    if (availableCredits.get() < MAX_CREDITS) {
+                    if (availableCredits.get() < config.getMaxCredits()) {
                         availableCredits.incrementAndGet();
                         if (callback != null) {
-                            callback.onCreditsChanged(availableCredits.get(), MAX_CREDITS);
+                            callback.onCreditsChanged(availableCredits.get(), config.getMaxCredits());
                         }
                     }
                 }
@@ -355,9 +356,9 @@ public abstract class L2capCocBase {
      */
     protected void resetCredits() {
         synchronized (creditsLock) {
-            availableCredits.set(MAX_CREDITS);
+            availableCredits.set(config.getMaxCredits());
             if (callback != null) {
-                callback.onCreditsChanged(availableCredits.get(), MAX_CREDITS);
+                callback.onCreditsChanged(availableCredits.get(), config.getMaxCredits());
             }
         }
     }

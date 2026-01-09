@@ -93,8 +93,8 @@ public class BluetoothL2capService extends Service implements L2capCocCallback {
         createNotificationChannel();
         
         // Initialize L2CAP components
-        server = new L2capCocServer(this);
-        client = new L2capCocClient(this);
+        server = new L2capCocServer(this, this);
+        client = new L2capCocClient(this, this);
         
         isServiceRunning = true;
     }
@@ -337,6 +337,28 @@ public class BluetoothL2capService extends Service implements L2capCocCallback {
             sent = client.sendTestMessage(data);
         }
         
+        return sent;
+    }
+
+    /**
+     * Send raw byte data through active connection
+     */
+    public boolean sendData(byte[] data) {
+        if (data == null || data.length == 0) {
+            return false;
+        }
+
+        boolean sent = false;
+
+        // Try server connection first
+        if (server != null && server.isConnected()) {
+            sent = server.sendData(data);
+        }
+        // Try client connection
+        else if (client != null && client.isConnected()) {
+            sent = client.sendData(data);
+        }
+
         return sent;
     }
     

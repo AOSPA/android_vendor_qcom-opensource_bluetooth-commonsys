@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+ SPDX-License-Identifier: BSD-3-Clause-Clear
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="L2CAP CoC Configuration"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:background="@android:color/background_light"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Current Configuration Display -->
+        <TextView
+            android:id="@+id/tvCurrentConfig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current: Loading..."
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:background="@android:color/background_light"
+            android:padding="8dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Buffer Size -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Buffer Size (bytes)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etBufferSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter buffer size (64-65536)"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Max Credits -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Max Credits"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etMaxCredits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter max credits (1-100)"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Header Size -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Header Size (bytes)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etHeaderSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter header size (2-16)"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- PSM -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PSM (Protocol Service Multiplexer)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etPsm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter PSM (1-32767)"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Validation Ranges -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Validation Ranges:"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvValidationRanges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Loading validation ranges..."
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:background="@android:color/background_light"
+            android:padding="8dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_green_dark"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnReset"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Reset to Defaults"
+                android:textColor="@android:color/white"
+                android:background="@android:color/holo_orange_dark"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancel"
+                android:textColor="@android:color/white"
+                android:background="@android:color/darker_gray"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+        <!-- Help Text -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Configuration Help:\n\n• Buffer Size: Controls the maximum packet size for
+            data transmission\n• Max Credits: Flow control parameter limiting concurrent transmissions\n•
+            Header Size: Size of the packet header (usually 4 bytes)\n• PSM: Protocol Service
+            Multiplexer for L2CAP channel identification\n\nNote: Changes take effect immediately
+            and are saved persistently."
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:background="@android:color/background_light"
+            android:padding="12dp"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</ScrollView>
