@@ -20,6 +20,11 @@ PRODUCT_PRODUCT_PROPERTIES += \
     bluetooth.profile.bas.client.enabled=true \
     bluetooth.device_id.vendor_id=0x001D \
 
+ifeq ($(TARGET_SUPPORTS_WEAR_ANDROID), true)
+PRODUCT_PRODUCT_PROPERTIES += \
+    bluetooth.auto_connect_profiles.enabled=true
+endif #for law wear target only
+
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     bluetooth.profile.sap.server.enabled=true \
     bluetooth.profile.pbap.sim.enabled=true \
