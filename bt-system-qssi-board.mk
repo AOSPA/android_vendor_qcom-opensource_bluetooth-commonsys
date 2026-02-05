@@ -1,6 +1,7 @@
 #BT
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
+BOARD_HAS_BT_XPAN  ?= true
 
 #FM
 ifneq ($(TARGET_BOARD_TYPE),auto)

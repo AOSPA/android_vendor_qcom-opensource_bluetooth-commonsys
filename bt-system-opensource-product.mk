@@ -42,8 +42,10 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
     bluetooth.core.le.max_number_of_concurrent_connections=10
 
 ifneq ($(TARGET_HAS_LOW_RAM), true)
+ifeq ($(BOARD_HAS_BT_XPAN), true)
 PRODUCT_PACKAGES += Xpan
 PRODUCT_PACKAGES += privapp-permission-xpan.xml
+endif #XPAN
 PRODUCT_PACKAGES += ChannelSoundingTestApp
 PRODUCT_PACKAGES += com.android.bluetooth.channelsoundingtestapp.xml
 PRODUCT_PACKAGES += BtVS
