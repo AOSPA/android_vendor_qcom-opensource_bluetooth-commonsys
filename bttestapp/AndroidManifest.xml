@@ -54,6 +54,12 @@
             android:exported="true"
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
+         <activity
+            android:name=".lecoc.L2capCocConfigActivity"
+            android:enabled="true"
+            android:exported="false"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
         <service
             android:name=".lecoc.BluetoothL2capService"
             android:enabled="true"
