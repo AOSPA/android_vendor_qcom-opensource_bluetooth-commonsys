@@ -18,10 +18,11 @@ import java.util.concurrent.Executors;
 
 /**
  * BluetoothVendorCommands class provides functionality to send vendor specific
- * Bluetooth commands to the Bluetooth stack. This class uses reflection to access
- * vendor-specific APIs that may not be part of the public Android Bluetooth API.
- * 
-  */
+ * Bluetooth commands to the Bluetooth stack. This class uses reflection to
+ * access vendor-specific APIs that may not be part of the public Android
+ * Bluetooth API.
+ *
+ */
 public class BluetoothVendorCommands {
 
     private static final String TAG = "BluetoothVendorCommands";
@@ -39,27 +40,26 @@ public class BluetoothVendorCommands {
 
     // Common vendor command opcodes (these may vary by vendor)
     public static final int VENDOR_CMD_RESET = 0xFC02;
-    
+
     // HCI VS Extended Set Event Filter command
-    public static final int HCI_VS_BLUETOOTH_CMD_OPCODE = 0xFFFF;
+    public static final int HCI_VS_BLUETOOTH_CMD_OPCODE = 0x3FF;
     public static final int HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE = 0x29;
-    public static final int PARAMETER_LENGTH = 0x9;
-    
+
     // Filter types for Extended Set Event Filter
     public static final int FILTER_TYPE_CLEAR_ALL = 0x00;
     public static final int FILTER_TYPE_INQUIRY_RESULT = 0x01;
     public static final int FILTER_TYPE_CONNECTION_SETUP = 0x02;
-    
+
     // Inquiry Result Filter Condition Types
     public static final int INQUIRY_FILTER_CONDITION_ALL_DEVICES = 0x00;
     public static final int INQUIRY_FILTER_CONDITION_CLASS_OF_DEVICE = 0x01;
     public static final int INQUIRY_FILTER_CONDITION_BD_ADDR = 0x02;
-    
+
     // Connection Setup Filter Condition Types
     public static final int CONNECTION_FILTER_CONDITION_ALL_DEVICES = 0x00;
     public static final int CONNECTION_FILTER_CONDITION_CLASS_OF_DEVICE = 0x01;
     public static final int CONNECTION_FILTER_CONDITION_BD_ADDR = 0x02;
-    
+
     // Auto Accept Flag values
     public static final int AUTO_ACCEPT_OFF = 0x01;
     public static final int AUTO_ACCEPT_ON_ROLE_SWITCH_DISABLED = 0x02;
@@ -70,8 +70,7 @@ public class BluetoothVendorCommands {
 
     @Override
     public void onCommandStatus(int ocf, int status) {
-      Log.d(TAG," onCommandStatus "+ocf);
-
+      Log.d(TAG, " onCommandStatus " + ocf);
     }
 
     @Override
@@ -83,9 +82,7 @@ public class BluetoothVendorCommands {
     public void onEvent(int code, byte[] data) {
       Log.d(TAG," onEvent "+code);
     }
-
   }
-
 
     /**
      * Private constructor for BluetoothVendorCommands (Singleton pattern)
@@ -93,7 +90,7 @@ public class BluetoothVendorCommands {
      */
     private BluetoothVendorCommands(Context context) {
         mContext = context.getApplicationContext(); // Use application context to avoid memory leaks
-        
+
         // Use BluetoothManager for modern Android versions
         BluetoothManager bluetoothManager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
         if (bluetoothManager != null) {
@@ -104,11 +101,11 @@ public class BluetoothVendorCommands {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             mBtAdapter = mBluetoothAdapter;
         }
-        
+
         // Initialize callback
         mBVCb = new BtVendorCb();
         mVSCallback = mBVCb;
-        
+
         if (DBG) Log.d(TAG, "BluetoothVendorCommands singleton initialized");
     }
 
@@ -152,7 +149,6 @@ public class BluetoothVendorCommands {
         return true;
     }
 
-
   boolean registerBtVendorCb() {
     byte[] eventcodes = new byte[0];
     Log.i(TAG, "registerBtVendorCb");
@@ -193,7 +189,6 @@ public class BluetoothVendorCommands {
     return true;
   }
 
-
     /**
      * Send a vendor specific command using available Android APIs
      * Note: Direct HCI vendor commands are not available through public Android APIs.
@@ -210,10 +205,25 @@ public class BluetoothVendorCommands {
 
         try {
             if (DBG) {
-                Log.d(TAG, "sendVendorCommand - Opcode: 0x" + 
-                      Integer.toHexString(opcode) + 
-                      ", Parameters: " + Arrays.toString(parameters));
+              Log.d(TAG, "sendVendorCommand - Opcode: 0x" +
+                             Integer.toHexString(opcode) +
+                             ", Parameters: " + Arrays.toString(parameters));
             }
+            // Open this no-op android command for test purpose
+            int getVendorCapabilitiesOcf = 0x153;
+            if (opcode < 0 ||
+                (opcode >= 0x150 && opcode < 0x160 &&
+                 opcode != getVendorCapabilitiesOcf) ||
+                opcode > 0x3ff) {
+              Log.w(
+                  TAG,
+                  "sendVendorCommand Opcode command value not in valid range ");
+              return false;
+            } else if (parameters == null || parameters.length > 255) {
+              Log.w(TAG, "Parameters size is too big");
+              return false;
+            }
+
             mBtAdapter.sendBluetoothHciVendorSpecificCommand(opcode, parameters);
             return true;
         } catch (Exception e) {
@@ -252,7 +262,7 @@ public class BluetoothVendorCommands {
      */
     public boolean sendCustomVendorCommand(int opcode, byte[] parameters) {
         if (DBG) {
-            Log.d(TAG, "Sending custom vendor command - Opcode: 0x" + 
+            Log.d(TAG, "Sending custom vendor command - Opcode: 0x" +
                   Integer.toHexString(opcode));
         }
         return sendVendorCommand(opcode, parameters);
@@ -264,11 +274,11 @@ public class BluetoothVendorCommands {
      */
     public boolean sendExtendedSetEventFilterClearAll() {
         if (DBG) Log.d(TAG, "Sending Extended Set Event Filter - Clear All");
-        
+
         byte[] parameters = new byte[2];
         parameters[0] = (byte) HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
         parameters[1] = (byte) FILTER_TYPE_CLEAR_ALL;
-        
+
         return sendVendorCommand(HCI_VS_BLUETOOTH_CMD_OPCODE, parameters);
     }
 
@@ -280,57 +290,66 @@ public class BluetoothVendorCommands {
      * @param bdAddr BD_ADDR (6 bytes) - used when conditionType is BD_ADDR
      * @return true if command was sent successfully
      */
-    public boolean sendExtendedSetEventFilterInquiryResult(int conditionType, 
-            byte[] classOfDevice, byte[] classOfDeviceMask, byte[] bdAddr) {
-        if (DBG) Log.d(TAG, "Sending Extended Set Event Filter - Inquiry Result, Condition: " + conditionType);
-        
-        byte[] parameters;
-        int paramIndex = 0;
-        
-        switch (conditionType) {
-            case INQUIRY_FILTER_CONDITION_ALL_DEVICES:
-                parameters = new byte[3];
-                parameters[paramIndex++] = (byte) HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
-                parameters[paramIndex++] = (byte) FILTER_TYPE_INQUIRY_RESULT;
-                parameters[paramIndex++] = (byte) INQUIRY_FILTER_CONDITION_ALL_DEVICES;
-                break;
-                
-            case INQUIRY_FILTER_CONDITION_CLASS_OF_DEVICE:
-                parameters = new byte[9]; // 3 + 3 + 3 bytes
-                parameters[paramIndex++] = (byte) HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
-                parameters[paramIndex++] = (byte) FILTER_TYPE_INQUIRY_RESULT;
-                parameters[paramIndex++] = (byte) INQUIRY_FILTER_CONDITION_CLASS_OF_DEVICE;
-                
-                // Copy Class of Device (3 bytes)
-                if (classOfDevice != null && classOfDevice.length >= 3) {
-                    System.arraycopy(classOfDevice, 0, parameters, paramIndex, 3);
-                }
-                paramIndex += 3;
-                
-                // Copy Class of Device Mask (3 bytes)
-                if (classOfDeviceMask != null && classOfDeviceMask.length >= 3) {
-                    System.arraycopy(classOfDeviceMask, 0, parameters, paramIndex, 3);
-                }
-                break;
-                
-            case INQUIRY_FILTER_CONDITION_BD_ADDR:
-                parameters = new byte[9]; // 3 + 6 bytes
-                parameters[paramIndex++] = (byte) HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
-                parameters[paramIndex++] = (byte) FILTER_TYPE_INQUIRY_RESULT;
-                parameters[paramIndex++] = (byte) INQUIRY_FILTER_CONDITION_BD_ADDR;
-                
-                // Copy BD_ADDR (6 bytes)
-                if (bdAddr != null && bdAddr.length >= 6) {
-                    System.arraycopy(bdAddr, 0, parameters, paramIndex, 6);
-                }
-                break;
-                
-            default:
-                Log.e(TAG, "Invalid inquiry filter condition type: " + conditionType);
-                return false;
+    public boolean sendExtendedSetEventFilterInquiryResult(
+        int conditionType, byte[] classOfDevice, byte[] classOfDeviceMask,
+        byte[] bdAddr) {
+      if (DBG)
+        Log.d(
+            TAG,
+            "Sending Extended Set Event Filter - Inquiry Result, Condition: " +
+                conditionType);
+
+      byte[] parameters;
+      int paramIndex = 0;
+
+      switch (conditionType) {
+      case INQUIRY_FILTER_CONDITION_ALL_DEVICES:
+        parameters = new byte[3];
+        parameters[paramIndex++] =
+            (byte)HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
+        parameters[paramIndex++] = (byte)FILTER_TYPE_INQUIRY_RESULT;
+        parameters[paramIndex++] = (byte)INQUIRY_FILTER_CONDITION_ALL_DEVICES;
+        break;
+
+      case INQUIRY_FILTER_CONDITION_CLASS_OF_DEVICE:
+        parameters = new byte[9]; // 3 + 3 + 3 bytes
+        parameters[paramIndex++] =
+            (byte)HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
+        parameters[paramIndex++] = (byte)FILTER_TYPE_INQUIRY_RESULT;
+        parameters[paramIndex++] =
+            (byte)INQUIRY_FILTER_CONDITION_CLASS_OF_DEVICE;
+
+        // Copy Class of Device (3 bytes)
+        if (classOfDevice != null && classOfDevice.length >= 3) {
+          System.arraycopy(classOfDevice, 0, parameters, paramIndex, 3);
         }
-        
-        return sendVendorCommand(HCI_VS_BLUETOOTH_CMD_OPCODE, parameters);
+        paramIndex += 3;
+
+        // Copy Class of Device Mask (3 bytes)
+        if (classOfDeviceMask != null && classOfDeviceMask.length >= 3) {
+          System.arraycopy(classOfDeviceMask, 0, parameters, paramIndex, 3);
+        }
+        break;
+
+      case INQUIRY_FILTER_CONDITION_BD_ADDR:
+        parameters = new byte[9]; // 3 + 6 bytes
+        parameters[paramIndex++] =
+            (byte)HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
+        parameters[paramIndex++] = (byte)FILTER_TYPE_INQUIRY_RESULT;
+        parameters[paramIndex++] = (byte)INQUIRY_FILTER_CONDITION_BD_ADDR;
+
+        // Copy BD_ADDR (6 bytes)
+        if (bdAddr != null && bdAddr.length >= 6) {
+          System.arraycopy(bdAddr, 0, parameters, paramIndex, 6);
+        }
+        break;
+
+      default:
+        Log.e(TAG, "Invalid inquiry filter condition type: " + conditionType);
+        return false;
+      }
+
+      return sendVendorCommand(HCI_VS_BLUETOOTH_CMD_OPCODE, parameters);
     }
 
     /**
@@ -344,63 +363,74 @@ public class BluetoothVendorCommands {
      */
     public boolean sendExtendedSetEventFilterConnectionSetup(int conditionType, int autoAcceptFlag,
             byte[] classOfDevice, byte[] classOfDeviceMask, byte[] bdAddr) {
-        if (DBG) Log.d(TAG, "Sending Extended Set Event Filter - Connection Setup, Condition: " + 
-                      conditionType + ", Auto Accept: " + autoAcceptFlag);
-        
-        byte[] parameters;
-        int paramIndex = 0;
-        
-        switch (conditionType) {
-            case CONNECTION_FILTER_CONDITION_ALL_DEVICES:
-                parameters = new byte[4];
-                parameters[paramIndex++] = (byte) HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
-                parameters[paramIndex++] = (byte) FILTER_TYPE_CONNECTION_SETUP;
-                parameters[paramIndex++] = (byte) CONNECTION_FILTER_CONDITION_ALL_DEVICES;
-                parameters[paramIndex++] = (byte) autoAcceptFlag;
-                break;
-                
-            case CONNECTION_FILTER_CONDITION_CLASS_OF_DEVICE:
-                parameters = new byte[10]; // 4 + 3 + 3 bytes
-                parameters[paramIndex++] = (byte) HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
-                parameters[paramIndex++] = (byte) FILTER_TYPE_CONNECTION_SETUP;
-                parameters[paramIndex++] = (byte) CONNECTION_FILTER_CONDITION_CLASS_OF_DEVICE;
-                parameters[paramIndex++] = (byte) autoAcceptFlag;
-                
-                // Copy Class of Device (3 bytes)
-                if (classOfDevice != null && classOfDevice.length >= 3) {
-                    System.arraycopy(classOfDevice, 0, parameters, paramIndex, 3);
-                }
-                paramIndex += 3;
-                
-                // Copy Class of Device Mask (3 bytes)
-                if (classOfDeviceMask != null && classOfDeviceMask.length >= 3) {
-                    System.arraycopy(classOfDeviceMask, 0, parameters, paramIndex, 3);
-                }
-                break;
-                
-            case CONNECTION_FILTER_CONDITION_BD_ADDR:
-                parameters = new byte[10]; // 4 + 6 bytes
-                parameters[paramIndex++] = (byte) PARAMETER_LENGTH;
-                parameters[paramIndex++] = (byte) FILTER_TYPE_CONNECTION_SETUP;
-                parameters[paramIndex++] = (byte) CONNECTION_FILTER_CONDITION_BD_ADDR;
+      if (DBG)
+        Log.d(
+            TAG,
+            "Sending Extended Set Event Filter - Connection Setup, Condition: " +
+                conditionType + ", Auto Accept: " + autoAcceptFlag);
 
-                // Copy BD_ADDR (6 bytes)
-                if (bdAddr != null && bdAddr.length >= 6) {
-                    for (int i = 0; i < 6; i++) {
-                        parameters[paramIndex + i] = bdAddr[5 - i];
-                    }
-					paramIndex += 6;
-                }
+      byte[] parameters;
+      int paramIndex = 0;
 
-                parameters[paramIndex] = (byte) autoAcceptFlag;
-                break;
-                
-            default:
-                Log.e(TAG, "Invalid connection filter condition type: " + conditionType);
-                return false;
+      switch (conditionType) {
+      case CONNECTION_FILTER_CONDITION_ALL_DEVICES:
+        parameters = new byte[4];
+        parameters[paramIndex++] =
+            (byte)HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
+        parameters[paramIndex++] = (byte)FILTER_TYPE_CONNECTION_SETUP;
+        parameters[paramIndex++] =
+            (byte)CONNECTION_FILTER_CONDITION_ALL_DEVICES;
+        parameters[paramIndex++] = (byte)autoAcceptFlag;
+        break;
+
+      case CONNECTION_FILTER_CONDITION_CLASS_OF_DEVICE:
+        parameters = new byte[10]; // 4 + 3 + 3 bytes
+        parameters[paramIndex++] =
+            (byte)HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
+        parameters[paramIndex++] = (byte)FILTER_TYPE_CONNECTION_SETUP;
+        parameters[paramIndex++] =
+            (byte)CONNECTION_FILTER_CONDITION_CLASS_OF_DEVICE;
+        parameters[paramIndex++] = (byte)autoAcceptFlag;
+
+        // Copy Class of Device (3 bytes)
+        if (classOfDevice != null && classOfDevice.length >= 3) {
+          System.arraycopy(classOfDevice, 0, parameters, paramIndex, 3);
         }
-        
-        return sendVendorCommand(HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE, parameters);
+        paramIndex += 3;
+
+        // Copy Class of Device Mask (3 bytes)
+        if (classOfDeviceMask != null && classOfDeviceMask.length >= 3) {
+          System.arraycopy(classOfDeviceMask, 0, parameters, paramIndex, 3);
+        }
+        break;
+
+      case CONNECTION_FILTER_CONDITION_BD_ADDR:
+        // 1 ( SUB_OPCODE) + 1  (CONNECTION_SETUP) + 1  (CONDITION_BD_ADDR)
+		// + 6 (BD_ADDR) + 1 (Auto Accept)
+        parameters = new byte[10];
+        parameters[paramIndex++] =
+            (byte)HCI_VS_EXTENDED_SET_EVENT_FILTER_SUB_OPCODE;
+        parameters[paramIndex++] = (byte)FILTER_TYPE_CONNECTION_SETUP;
+        parameters[paramIndex++] = (byte)CONNECTION_FILTER_CONDITION_BD_ADDR;
+
+        /* Copy BD_ADDR (6 bytes) - little endian (LSB first)
+           11:22:33:44:55:66 -> 66:55:44:33:22:11 */
+        if (bdAddr != null && bdAddr.length >= 6) {
+          for (int i = 0; i < 6; i++) {
+            parameters[paramIndex + i] = bdAddr[5 - i];
+          }
+          paramIndex += 6;
+        }
+        parameters[paramIndex] = (byte)autoAcceptFlag;
+        break;
+
+      default:
+        Log.e(TAG,
+              "Invalid connection filter condition type: " + conditionType);
+        return false;
+        }
+
+        return sendVendorCommand(HCI_VS_BLUETOOTH_CMD_OPCODE, parameters);
     }
 
     /**
@@ -412,13 +442,13 @@ public class BluetoothVendorCommands {
         if (bdAddrStr == null || bdAddrStr.length() != 17) {
             return null;
         }
-        
+
         try {
             String[] parts = bdAddrStr.split(":");
             if (parts.length != 6) {
                 return null;
             }
-            
+
             byte[] bdAddr = new byte[6];
             for (int i = 0; i < 6; i++) {
                 bdAddr[i] = (byte) Integer.parseInt(parts[i], 16);
@@ -439,7 +469,7 @@ public class BluetoothVendorCommands {
         if (codStr == null || codStr.length() != 6) {
             return null;
         }
-        
+
         try {
             byte[] cod = new byte[3];
             for (int i = 0; i < 3; i++) {

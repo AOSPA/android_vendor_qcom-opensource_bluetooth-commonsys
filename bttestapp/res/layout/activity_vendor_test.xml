@@ -33,6 +33,12 @@
             android:layout_marginBottom="16dp" />
 
         <!-- Custom Command Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,6 +72,8 @@
             android:text="Send Custom Command"
             android:layout_marginBottom="16dp" />
 
+            </LinearLayout>
+
         <!-- Extended Set Event Filter Section -->
         <TextView
             android:layout_width="match_parent"
@@ -83,6 +91,12 @@
             android:layout_marginBottom="8dp" />
 
         <!-- Inquiry Result Filter Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -128,6 +142,7 @@
             android:layout_height="wrap_content"
             android:text="Send Inquiry Result Filter"
             android:layout_marginBottom="8dp" />
+            </LinearLayout>
 
         <!-- Connection Setup Filter Section -->
         <TextView
