@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+ SPDX-License-Identifier: BSD-3-Clause-Clear
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.codeaurora.bluetooth.bttestapp"
     android:versionCode="1"
@@ -65,6 +69,12 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="connectedDevice" />
+
+        <activity
+            android:name=".vendor.VendorCommandTestActivity"
+            android:enabled="true"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
     </application>
 
 </manifest>

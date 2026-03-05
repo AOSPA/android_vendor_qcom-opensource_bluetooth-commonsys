@@ -24,13 +24,20 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * ​​​​​Changes from Qualcomm Technologies, Inc. are provided under the following license:
+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+ * SPDX-License-Identifier: BSD-3-Clause-Clear
  */
 
 package org.codeaurora.bluetooth.bttestapp;
 
 import org.codeaurora.bluetooth.bttestapp.hidd.HidDeviceActivity;
 import org.codeaurora.bluetooth.bttestapp.lecoc.L2capCocActivity;
+import org.codeaurora.bluetooth.bttestapp.vendor.VendorCommandTestActivity;
+
 import org.codeaurora.bluetooth.bttestapp.R;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -136,5 +143,10 @@ public class MainActivity extends Activity {
         }
         Log.i(TAG," showL2capCoc");
         startActivity(new Intent(this, L2capCocActivity.class));
+    }
+
+    public void showVendorCommands(View v) {
+        Log.i(TAG," showVendorCommands");
+        startActivity(new Intent(this, VendorCommandTestActivity.class));
     }
 }

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+ SPDX-License-Identifier: BSD-3-Clause-Clear
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bluetooth Vendor Commands Test"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Status: Ready"
+            android:textSize="14sp"
+            android:background="#f0f0f0"
+            android:padding="8dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Custom Command Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Custom Vendor Command"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/opcode_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Opcode (hex, e.g., FFFF)"
+            android:inputType="text"
+            android:text="FFFF"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/parameters_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Parameters (hex, e.g., 29 00 for Clear All)"
+            android:inputType="text"
+            android:text="29 00"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/send_custom_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Custom Command"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Extended Set Event Filter Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HCI VS Extended Set Event Filter"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/clear_all_filters_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clear All Filters"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Inquiry Result Filter Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Inquiry Result Filter"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/inquiry_condition_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/inquiry_cod_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Class of Device (6 hex digits, e.g., 200404)"
+            android:inputType="text"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/inquiry_cod_mask_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Class of Device Mask (6 hex digits, e.g., FFFFFF)"
+            android:inputType="text"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/inquiry_bdaddr_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="BD_ADDR (XX:XX:XX:XX:XX:XX)"
+            android:inputType="text"
+            android:layout_marginBottom="4dp" />
+
+        <Button
+            android:id="@+id/send_inquiry_filter_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Inquiry Result Filter"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Connection Setup Filter Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connection Setup Filter"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/connection_condition_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/auto_accept_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/connection_cod_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Class of Device (6 hex digits, e.g., 200404)"
+            android:inputType="text"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/connection_cod_mask_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Class of Device Mask (6 hex digits, e.g., FFFFFF)"
+            android:inputType="text"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/connection_bdaddr_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="BD_ADDR (XX:XX:XX:XX:XX:XX)"
+            android:inputType="text"
+            android:layout_marginBottom="4dp" />
+
+        <Button
+            android:id="@+id/send_connection_filter_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Connection Setup Filter"
+            android:layout_marginBottom="16dp" />
+
+    </LinearLayout>
+
+</ScrollView>
