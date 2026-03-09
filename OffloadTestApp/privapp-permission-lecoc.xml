@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+SPDX-License-Identifier: BSD-3-Clause-Clear.
+-->
+
+<permissions>
+    <privapp-permissions package="org.codeaurora.bluetooth.offload_testapp">
+        <permission name="android.permission.BLUETOOTH_PRIVILEGED"/>
+        <permission name="android.permission.ACCESS_CONTEXT_HUB"/>
+    </privapp-permissions>
+</permissions>
