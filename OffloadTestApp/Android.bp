@@ -1,0 +1,33 @@
+android_app {
+    name: "offload_testapp",
+
+    srcs: [
+        "src/*.java",
+    ],
+    exclude_srcs: [
+       "src/GattClientqabt.java",
+       "src/ThroughputStateMachineqabt.java",
+       "src/SocketServerqabt.java",
+       "src/GattServerqabt.java",
+    ],
+    certificate: ":com.android.bluetooth.certificate",
+    privileged: true,
+    required: ["privapp-permission-offload.xml"],
+
+    optimize: {
+        enabled: false,
+    },
+
+    static_libs: [
+        "androidx.legacy_legacy-support-v13",
+        "androidx.appcompat_appcompat",
+        "android.hardware.contexthub-V4-java",
+    ],
+    platform_apis: true,
+ }
+
+ prebuilt_etc {
+    name: "privapp-permission-offload.xml",
+    src: "privapp-permission-lecoc.xml",
+    sub_dir: "permissions",
+  }
