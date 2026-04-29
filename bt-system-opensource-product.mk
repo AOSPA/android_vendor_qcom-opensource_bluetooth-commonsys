@@ -20,6 +20,11 @@ PRODUCT_PRODUCT_PROPERTIES += \
     bluetooth.profile.bas.client.enabled=true \
     bluetooth.device_id.vendor_id=0x001D \
 
+ifeq ($(TARGET_SUPPORTS_WEAR_ANDROID), true)
+PRODUCT_PRODUCT_PROPERTIES += \
+    bluetooth.auto_connect_profiles.enabled=true
+endif #for law wear target only
+
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     bluetooth.profile.sap.server.enabled=true \
     bluetooth.profile.pbap.sim.enabled=true \
@@ -46,6 +51,10 @@ endif #TARGET_HAS_LOW_RAM
 
 endif #TARGET_BOARD_TYPE
 endif #BOARD_HAVE_BLUETOOTH_QCOM
+
+ifeq ($(TARGET_HAS_QTI_OPTIMIZATIONS), true)
+BOARD_HAVE_QCOM_FM := false
+endif #TARGET_HAS_QTI_OPTIMIZATIONS
 
 #FM
 ifeq ($(BOARD_HAVE_QCOM_FM), true)
