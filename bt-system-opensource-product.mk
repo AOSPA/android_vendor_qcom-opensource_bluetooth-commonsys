@@ -23,6 +23,7 @@ PRODUCT_PRODUCT_PROPERTIES += \
 ifeq ($(TARGET_SUPPORTS_WEAR_ANDROID), true)
 PRODUCT_PRODUCT_PROPERTIES += \
     bluetooth.auto_connect_profiles.enabled=true
+$(call soong_config_set, wearbluetooth, is_wearables_target, true )
 endif #for law wear target only
 
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
