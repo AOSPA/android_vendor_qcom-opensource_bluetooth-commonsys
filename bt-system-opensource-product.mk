@@ -39,7 +39,9 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
     bluetooth.leaudio.dual_bidirection_swb.supported=true \
     persist.bluetooth.leaudio.notify.idle.during.call=true \
     persist.vendor.bluetooth.haltest=true \
-    bluetooth.core.le.max_number_of_concurrent_connections=10
+    bluetooth.core.le.max_number_of_concurrent_connections=10 \
+    bluetooth.ble.iso_min_connection_interval=24 \
+    bluetooth.ble.iso_max_connection_interval=40
 
 ifneq ($(TARGET_HAS_LOW_RAM), true)
 ifeq ($(BOARD_HAS_BT_XPAN), true)
